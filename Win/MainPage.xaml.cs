@@ -33,11 +33,9 @@ namespace Win
 
         public MainPage()
         {
-
-
             this.InitializeComponent();
 
-            _client = new Client(swapChainPanel);
+            _client = new Client();
 
             Window.Current.CoreWindow.SizeChanged += CoreWindow_SizeChanged;
 
@@ -126,7 +124,7 @@ namespace Win
 
         private void swapChainPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            _client.Start(Window.Current.Bounds, CloseApp);
+            _client.Init(swapChainPanel, Window.Current.Bounds, CloseApp);
         }
 
         public void CloseApp()
