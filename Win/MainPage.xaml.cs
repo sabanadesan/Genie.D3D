@@ -51,8 +51,11 @@ namespace Win
                 Gamepad.GamepadRemoved += Gamepad_GamepadRemoved;
             }
 
-            UI.FpsTextBox = fps;
-            UI.CountTextBox = count;
+            UI ui = new UI();
+            Service.Register<UI>(ui);
+
+            ui.FpsTextBox = fps;
+            ui.CountTextBox = count;
         }
 
         private void CoreWindow_SizeChanged(CoreWindow sender, WindowSizeChangedEventArgs args)

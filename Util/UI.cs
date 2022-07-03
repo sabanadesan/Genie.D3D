@@ -8,12 +8,17 @@ using Windows.UI.Xaml.Controls;
 
 namespace D3D
 {
-    public static class UI
+    public class UI
     {
-        private static TextBox _fpstext;
-        private static TextBox _counttext;
+        private TextBox _fpstext;
+        private TextBox _counttext;
 
-        public static TextBox FpsTextBox
+        public UI()
+        {
+
+        }
+
+        public TextBox FpsTextBox
         {
             get
             {
@@ -24,7 +29,7 @@ namespace D3D
                 _fpstext = value;
             }
         }
-        public static TextBox CountTextBox
+        public TextBox CountTextBox
         {
             get { return _counttext; }
             set

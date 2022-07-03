@@ -55,8 +55,11 @@ namespace D3D
             CloseApp = closeApp;
 
             _box = new BoxApp(_swapChainPanel);
-            _box.FpsTextBox = UI.FpsTextBox;
-            _box.CountTextBox = UI.CountTextBox;
+
+            UI ui = Service.Resolve<UI>();
+
+            _box.FpsTextBox = ui.FpsTextBox;
+            _box.CountTextBox = ui.CountTextBox;
 
             _box.Initialize();
             Resize(bounds);
