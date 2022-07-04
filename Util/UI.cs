@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
 namespace D3D
@@ -36,6 +38,15 @@ namespace D3D
             {
                 _counttext = value;
             }
+        }
+
+        public void DrawUI(string MainWindowCaption, float fps, float mspf, int count)
+        {
+            var ignored = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                FpsTextBox.Text = $"{MainWindowCaption}    fps: {fps}   mspf: {mspf}";
+                CountTextBox.Text = $"Count: {count}";
+            });
         }
     }
 }

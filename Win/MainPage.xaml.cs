@@ -46,9 +46,6 @@ namespace Win
             ui.FpsTextBox = fps;
             ui.CountTextBox = count;
 
-            _box.FpsTextBox = ui.FpsTextBox;
-            _box.CountTextBox = ui.CountTextBox;
-
             _uim = new UIInputManager();
             Service.Register<UIInputManager>(_uim);
             _uim.CloseApp = CloseApp;

@@ -112,31 +112,9 @@ namespace D3D
 
         long lastFrame;
 
-        private TextBox fpstext;
-        private TextBox counttext;
         float fps;
         float mspf;
         int count;
-
-        public TextBox FpsTextBox
-        {
-            get
-            {
-                return fpstext;
-            }
-            set
-            {
-                fpstext = value;
-            }
-        }
-        public TextBox CountTextBox
-        {
-            get { return counttext; }
-            set
-            {
-                counttext = value;
-            }
-        }
 
         public int Count
         {
@@ -505,11 +483,8 @@ namespace D3D
 
         private void DrawUI()
         {
-            var ignored = CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                FpsTextBox.Text = $"{MainWindowCaption}    fps: {fps}   mspf: {mspf}";
-                CountTextBox.Text = $"Count: {count}";
-            });
+            UI ui = Service.Resolve<UI>();
+            ui.DrawUI(MainWindowCaption, fps, mspf, count);
         }
 
         private void Sleep()
