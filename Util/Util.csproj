@@ -139,6 +139,7 @@
     <Compile Include="Service.cs" />
     <Compile Include="TextureUtilities.cs" />
     <Compile Include="UI.cs" />
+    <Compile Include="UIInputManager.cs" />
     <Compile Include="UploadBuffer.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="WinUtility.cs" />

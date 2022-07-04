@@ -30,16 +30,37 @@ namespace Win
     public sealed partial class MainPage : Page
     {
         private Client _client;
+        private UIInputManager _uim;
+        private BoxApp _box;
 
         public MainPage()
         {
             this.InitializeComponent();
 
+            _box = new BoxApp(swapChainPanel);
+            Service.Register<BoxApp>(_box);
+
+            UI ui = new UI();
+            Service.Register<UI>(ui);
+
+            ui.FpsTextBox = fps;
+            ui.CountTextBox = count;
+
+            _box.FpsTextBox = ui.FpsTextBox;
+            _box.CountTextBox = ui.CountTextBox;
+
+            _uim = new UIInputManager();
+            Service.Register<UIInputManager>(_uim);
+            _uim.CloseApp = CloseApp;
+
+            Rect bounds = Window.Current.Bounds;
+            _uim.Bounds = bounds;
+
             _client = new Client();
 
             Window.Current.CoreWindow.SizeChanged += CoreWindow_SizeChanged;
 
-            if (!_client.XBOX)
+            if (!_uim.XBOX)
             {
                 Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
                 Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
@@ -50,40 +71,34 @@ namespace Win
                 Gamepad.GamepadAdded += GamepadAdded;
                 Gamepad.GamepadRemoved += Gamepad_GamepadRemoved;
             }
-
-            UI ui = new UI();
-            Service.Register<UI>(ui);
-
-            ui.FpsTextBox = fps;
-            ui.CountTextBox = count;
         }
 
         private void CoreWindow_SizeChanged(CoreWindow sender, WindowSizeChangedEventArgs args)
         {
             Rect bounds = Window.Current.Bounds;
-
-            _client.Resize(bounds);
+            _uim.Bounds = bounds;
+            _uim.Resize();
         }
 
         private void Gamepad_GamepadRemoved(object sender, Gamepad e)
         {
-            int indexRemoved = _client.MyGamepads.IndexOf(e);
+            int indexRemoved = _uim.MyGamepads.IndexOf(e);
 
             if (indexRemoved > -1)
             {
-                if (_client.MainGamepad == _client.MyGamepads[indexRemoved])
+                if (_uim.MainGamepad == _uim.MyGamepads[indexRemoved])
                 {
-                    _client.MainGamepad = null;
+                    _uim.MainGamepad = null;
                 }
 
-                _client.MyGamepads.RemoveAt(indexRemoved);
+                _uim.MyGamepads.RemoveAt(indexRemoved);
             }
         }
 
         private void GamepadAdded(object sender, Gamepad e)
         {
-            _client.MyGamepads.Add(e);
-            _client.MainGamepad = _client.MyGamepads[0];
+            _uim.MyGamepads.Add(e);
+            _uim.MainGamepad = _uim.MyGamepads[0];
         }
 
         private void CoreWindow_PointerMoved(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
@@ -112,22 +127,22 @@ namespace Win
                 }
             }
 
-            _client.OnBaseMouseMove(mouse, x, y);
+            _uim.OnBaseMouseMove(mouse, x, y);
         }
 
         private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            _client.OnBaseKeys(args.VirtualKey, true);
+            _uim.OnBaseKeys(args.VirtualKey, true);
         }
 
         private void CoreWindow_KeyUp(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
         {
-            _client.OnBaseKeys(args.VirtualKey, false);
+            _uim.OnBaseKeys(args.VirtualKey, false);
         }
 
         private void swapChainPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            _client.Init(swapChainPanel, Window.Current.Bounds, CloseApp);
+            _client.Init();
         }
 
         public void CloseApp()
@@ -146,7 +161,7 @@ namespace Win
 
         private void go_Click(object sender, RoutedEventArgs e)
         {
-            _client.Go_Click();
+            _box.Count = _box.Count + 1;
         }
     }
 }
