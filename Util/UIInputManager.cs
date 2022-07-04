@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Gaming.Input;
 using Windows.System;
+using Windows.UI.Input;
 
 namespace D3D
 {
@@ -57,6 +58,54 @@ namespace D3D
         {
             _myGamepads = new List<Gamepad>();
             _box = Service.Resolve<BoxApp>();
+        }
+
+        public void GamepadRemoved(Gamepad e)
+        {
+            int indexRemoved = MyGamepads.IndexOf(e);
+
+            if (indexRemoved > -1)
+            {
+                if (MainGamepad == MyGamepads[indexRemoved])
+                {
+                    MainGamepad = null;
+                }
+
+                MyGamepads.RemoveAt(indexRemoved);
+            }
+        }
+
+        public void GamepadAdded(Gamepad e)
+        {
+            MyGamepads.Add(e);
+            MainGamepad = MyGamepads[0];
+        }
+
+        public void PointerMoved(PointerPoint point)
+        {
+            double x = point.Position.X;
+            double y = point.Position.Y;
+
+            Mouse mouse = new Mouse();
+
+            if (point.PointerDevice.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+            {
+
+                if (point.Properties.IsLeftButtonPressed)
+                {
+                    mouse.left = true;
+                }
+                if (point.Properties.IsMiddleButtonPressed)
+                {
+                    mouse.mid = true;
+                }
+                if (point.Properties.IsRightButtonPressed)
+                {
+                    mouse.right = true;
+                }
+            }
+
+            OnBaseMouseMove(mouse, x, y);
         }
 
         public void Resize()

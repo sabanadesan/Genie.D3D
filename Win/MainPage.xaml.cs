@@ -69,7 +69,7 @@ namespace Win
             else
             {
                 Gamepad.GamepadAdded += GamepadAdded;
-                Gamepad.GamepadRemoved += Gamepad_GamepadRemoved;
+                Gamepad.GamepadRemoved += GamepadRemoved;
             }
         }
 
@@ -80,54 +80,19 @@ namespace Win
             _uim.Resize();
         }
 
-        private void Gamepad_GamepadRemoved(object sender, Gamepad e)
+        private void GamepadRemoved(object sender, Gamepad e)
         {
-            int indexRemoved = _uim.MyGamepads.IndexOf(e);
-
-            if (indexRemoved > -1)
-            {
-                if (_uim.MainGamepad == _uim.MyGamepads[indexRemoved])
-                {
-                    _uim.MainGamepad = null;
-                }
-
-                _uim.MyGamepads.RemoveAt(indexRemoved);
-            }
+            _uim.GamepadRemoved(e);
         }
 
         private void GamepadAdded(object sender, Gamepad e)
         {
-            _uim.MyGamepads.Add(e);
-            _uim.MainGamepad = _uim.MyGamepads[0];
+            _uim.GamepadAdded(e);
         }
 
         private void CoreWindow_PointerMoved(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
         {
-            PointerPoint point = args.CurrentPoint;
-
-            double x = point.Position.X;
-            double y = point.Position.Y;
-
-            Mouse mouse = new Mouse();
-
-            if (point.PointerDevice.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
-            {
-
-                if (point.Properties.IsLeftButtonPressed)
-                {
-                    mouse.left = true;
-                }
-                if (point.Properties.IsMiddleButtonPressed)
-                {
-                    mouse.mid = true;
-                }
-                if (point.Properties.IsRightButtonPressed)
-                {
-                    mouse.right = true;
-                }
-            }
-
-            _uim.OnBaseMouseMove(mouse, x, y);
+            _uim.PointerMoved(args.CurrentPoint);
         }
 
         private void CoreWindow_KeyDown(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.KeyEventArgs args)
